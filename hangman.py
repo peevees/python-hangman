@@ -1,15 +1,40 @@
 from wordlist import word_list;
 import random;
+import argparse
 
 secret_Word = ""
 letters_Guessed = ""
+# Then number of turns before player loses
+failureCount = 3
+
+# Initialize parser
+parser = argparse.ArgumentParser()
+ 
+# Adding optional argument
+parser.add_argument("-w", "--Word", help = "What word to guess?", default = "")
+parser.add_argument("-g", "--Guesses", help = "How many guesses is allowed?", default = 6)
+
+ # Read arguments from command line
+args = parser.parse_args()
+ 
+if args.Word:
+    print("Word set to: % s" % args.Word)
+    secret_Word = args.Word
+if args.Guesses:
+    try:
+        AllowedGuesses = int(args.Guesses)
+        print("Guesses set to: % s" % AllowedGuesses)
+        failureCount = AllowedGuesses
+    except ValueError as verr:
+        print("Invalid number of guesses: %s" % verr)
+        pass # do job to handle: s does not contain anything convertible to int
+    except Exception as ex:
+        print("Unknown error: %s" % ex)
+        pass # do job to handle: Exception occurred while converting to int
 
 # pick a random word from the word list if secret word is not set
 if (not (secret_Word and not secret_Word.isspace())):
     secret_Word = random.choice(word_list)
-
-# Then number of turns before player loses
-failureCount = 6
 
 #loop until the player has made too many failed attempts
 #will 'break' loop if they succed instead
